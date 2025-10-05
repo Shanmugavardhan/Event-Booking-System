@@ -8,6 +8,7 @@ import EventsSection from './components/EventsSection'
 import WhySection from './components/WhySection'
 import Footer from './components/Footer'
 
+
 function App() {
   return (
     <>
