@@ -1,27 +1,29 @@
+import './style.css';
+
 function Footer() {
     return (
-        <footer class="custom-footer">
-            <div class="footer-container">
-                <div class="footer-grid">
-                    <div class="footer-brand">
-                        <div class="footer-logo-row">
-                            <div class="footer-logo-icon">
-                                <i class="ri-calendar-event-line"></i>
+        <footer className="custom-footer">
+            <div className="footer-container">
+                <div className="footer-grid">
+                    <div className="footer-brand">
+                        <div className="footer-logo-row">
+                            <div className="footer-logo-icon">
+                                <i className="ri-calendar-event-line"></i>
                             </div>
-                            <span class="footer-logo-text">EventHub</span>
+                            <span className="footer-logo-text">EventHub</span>
                         </div>
-                        <p class="footer-desc">
+                        <p className="footer-desc">
                             Discover amazing events and create unforgettable experiences. Your gateway to the best events in your
                             city.
                         </p>
-                        <div class="footer-socials">
-                            <a href="#"><i class="ri-facebook-fill"></i></a>
-                            <a href="#"><i class="ri-twitter-fill"></i></a>
-                            <a href="#"><i class="ri-instagram-fill"></i></a>
-                            <a href="#"><i class="ri-linkedin-fill"></i></a>
+                        <div className="footer-socials">
+                            <a href="#"><i className="ri-facebook-fill"></i></a>
+                            <a href="#"><i className="ri-twitter-fill"></i></a>
+                            <a href="#"><i className="ri-instagram-fill"></i></a>
+                            <a href="#"><i className="ri-linkedin-fill"></i></a>
                         </div>
                     </div>
-                    <div class="footer-col">
+                    <div className="footer-col">
                         <h3>Company</h3>
                         <ul>
                             <li><a href="#" data-discover="true">About Us</a></li>
@@ -30,7 +32,7 @@ function Footer() {
                             <li><a href="#" data-discover="true">Press</a></li>
                         </ul>
                     </div>
-                    <div class="footer-col">
+                    <div className="footer-col">
                         <h3>Support</h3>
                         <ul>
                             <li><a href="#" data-discover="true">Help Center</a></li>
@@ -39,7 +41,7 @@ function Footer() {
                             <li><a href="#" data-discover="true">Terms of Service</a></li>
                         </ul>
                     </div>
-                    <div class="footer-col">
+                    <div className="footer-col">
                         <h3>For Organizers</h3>
                         <ul>
                             <li><a href="#" data-discover="true">Create Event</a></li>
@@ -49,9 +51,9 @@ function Footer() {
                         </ul>
                     </div>
                 </div>
-                <div class="footer-bottom">
+                <div className="footer-bottom">
                     <p>© 2025 EventHub. All rights reserved.</p>
-                    <div class="footer-bottom-links">
+                    <div className="footer-bottom-links">
                         <a href="#" data-discover="true">Privacy Policy</a>
                         <a href="#" data-discover="true">Cookie Policy</a>
                         <a href="https://readdy.ai/?origin=logo" target="_blank" rel="noopener noreferrer">Website Builder</a>
