@@ -3,8 +3,7 @@ import { useState } from "react";
 function Header() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-
+  const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
   const openModal = (type) => {
     document.body.style.overflow = "hidden";
     if (type === "signin") {
@@ -22,7 +21,10 @@ function Header() {
     document.body.style.overflow = "auto";
     setShowSignIn(false);
     setShowSignUp(false);
-    setShowUserMenu(false);
+  };
+
+  const toggleUserMenu = () => {
+    setIsUserMenuVisible((prev) => !prev);
   };
 
   //   const handleShowSignInModal = () => {
@@ -74,7 +76,7 @@ function Header() {
               >
                 Sign Up
               </button>
-              <div className="header-user hidden">
+              <div onClick={toggleUserMenu} className="header-user">
                 <div className="user-avatar">
                   <img
                     alt="User Avatar"
@@ -82,7 +84,8 @@ function Header() {
                   />
                 </div>
                 <span className="user-name">John Doe</span>
-                <button onClick={() => openModal("usermenu")} className="menu-btn">
+                <button className="menu-btn">
+                  {isUserMenuVisible ? "Hide Menu" : "Show Menu"}
                   <i className="ri-menu-line"></i>
                 </button>
               </div>
@@ -94,7 +97,10 @@ function Header() {
       {showSignIn && (
         <div className="sign-in-modal">
           <div className="modal-container">
-            <button onClick={() => closeAllModals()} className="modal-close-btn">
+            <button
+              onClick={() => closeAllModals()}
+              className="modal-close-btn"
+            >
               <i className="ri-close-line"></i>
             </button>
             <div className="modal-header">
@@ -103,7 +109,7 @@ function Header() {
             </div>
             <form className="modal-form">
               <div className="form-group">
-                <label for="signin-email">Email Address</label>
+                <label htmlFor="signin-email">Email Address</label>
                 <input
                   id="signin-email"
                   type="email"
@@ -111,7 +117,7 @@ function Header() {
                 />
               </div>
               <div className="form-group">
-                <label for="signin-password">Password</label>
+                <label htmlFor="signin-password">Password</label>
                 <input
                   id="signin-password"
                   type="password"
@@ -120,7 +126,7 @@ function Header() {
               </div>
               <div className="form-group rememberdiv">
                 <input id="remember-me" type="checkbox" />
-                <label for="remember-me">Remember Me</label>
+                <label htmlFor="remember-me">Remember Me</label>
               </div>
               <div className="form-group">
                 <a href="#" className="forgot-password-link">
@@ -142,7 +148,10 @@ function Header() {
       {showSignUp && (
         <div className="sign-up-modal">
           <div className="modal-container">
-            <button onClick={() => closeAllModals()} className="modal-close-btn">
+            <button
+              onClick={() => closeAllModals()}
+              className="modal-close-btn"
+            >
               <i className="ri-close-line"></i>
             </button>
             <div className="modal-header">
@@ -154,11 +163,11 @@ function Header() {
             </div>
             <form className="modal-form">
               <div className="form-group">
-                <label for="signup-name">Full Name</label>
+                <label htmlFor="signup-name">Full Name</label>
                 <input id="signup-name" type="text" placeholder="Your Name" />
               </div>
               <div className="form-group">
-                <label for="signup-email">Email Address</label>
+                <label htmlFor="signup-email">Email Address</label>
                 <input
                   id="signup-email"
                   type="email"
@@ -166,7 +175,7 @@ function Header() {
                 />
               </div>
               <div className="form-group">
-                <label for="signup-password">Password</label>
+                <label htmlFor="signup-password">Password</label>
                 <input
                   id="signup-password"
                   type="password"
@@ -174,7 +183,7 @@ function Header() {
                 />
               </div>
               <div className="form-group">
-                <label for="signup-confirm-password">Confirm Password</label>
+                <label htmlFor="signup-confirm-password">Confirm Password</label>
                 <input
                   id="signup-confirm-password"
                   type="password"
@@ -183,7 +192,7 @@ function Header() {
               </div>
               <div className="form-group">
                 <input id="terms" type="checkbox" />
-                <label for="terms">
+                <label htmlFor="terms">
                   I agree to the{" "}
                   <a href="#" className="terms-link">
                     Terms & Conditions
@@ -197,54 +206,72 @@ function Header() {
           </div>
         </div>
       )}
-      {showUserMenu && (
-        <div className="user-Menu">
-          <div className="user-Menu-content">
-            <ul className="user-Menu-list">
-              <li style="margin-bottom:8px;">
-                <a
-                  href="#"
-                  style="display:block;color:#374151;text-decoration:none;transition:color 0.2s;"
-                  onMouseOver="this.style.color='#2563eb'"
-                  onMouseOut="this.style.color='#374151'"
-                >
-                  Profile
-                </a>
-              </li>
-              <li style="margin-bottom:8px;">
-                <a
-                  href="#"
-                  style="display:block;color:#374151;text-decoration:none;transition:color 0.2s;"
-                  onMouseOver="this.style.color='#2563eb'"
-                  onMouseOut="this.style.color='#374151'"
-                >
-                  My Bookings
-                </a>
-              </li>
-              <li style="margin-bottom:8px;">
-                <a
-                  href="#"
-                  style="display:block;color:#374151;text-decoration:none;transition:color 0.2s;"
-                  onMouseOver="this.style.color='#2563eb'"
-                  onMouseOut="this.style.color='#374151'"
-                >
-                  Settings
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  style="display:block;color:#374151;text-decoration:none;transition:color 0.2s;"
-                  onMouseOver="this.style.color='#2563eb'"
-                  onMouseOut="this.style.color='#374151'"
-                >
-                  Logout
-                </a>
-              </li>
-            </ul>
-          </div>
+      <div className={`user-Menu ${isUserMenuVisible ? "visible" : ""}`}>
+        <div className="user-Menu-content">
+          <ul className="user-Menu-list">
+            <li style={{ marginBottom: "8px" }}>
+              <a
+                href="#"
+                style={{
+                  display: "block",
+                  color: "#374151",
+                  textDecoration: "none",
+                  transition: "color 0.2s",
+                }}
+                onMouseOver={e => (e.currentTarget.style.color = "#2563eb")}
+                onMouseOut={e => (e.currentTarget.style.color = "#374151")}
+              >
+                Profile
+              </a>
+            </li>
+            <li style={{ marginBottom: "8px" }}>
+              <a
+                href="#"
+                style={{
+                  display: "block",
+                  color: "#374151",
+                  textDecoration: "none",
+                  transition: "color 0.2s",
+                }}
+                onMouseOver={e => (e.currentTarget.style.color = "#2563eb")}
+                onMouseOut={e => (e.currentTarget.style.color = "#374151")}
+              >
+                My Bookings
+              </a>
+            </li>
+            <li style={{ marginBottom: "8px" }}>
+              <a
+                href="#"
+                style={{
+                  display: "block",
+                  color: "#374151",
+                  textDecoration: "none",
+                  transition: "color 0.2s",
+                }}
+                onMouseOver={e => (e.currentTarget.style.color = "#2563eb")}
+                onMouseOut={e => (e.currentTarget.style.color = "#374151")}
+              >
+                Settings
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                style={{
+                  display: "block",
+                  color: "#374151",
+                  textDecoration: "none",
+                  transition: "color 0.2s",
+                }}
+                onMouseOver={e => (e.currentTarget.style.color = "#2563eb")}
+                onMouseOut={e => (e.currentTarget.style.color = "#374151")}
+              >
+                Logout
+              </a>
+            </li>
+          </ul>
         </div>
-      )}
+      </div>
     </>
   );
 }

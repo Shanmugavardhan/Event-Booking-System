@@ -10,7 +10,7 @@ function UserMenu() {
   return (
     <>
       {showUserMenu && (
-        <div className="user-Menu">
+        <div className="user-Menu visible">
           <div className="user-Menu-content">
             <ul className="user-Menu-list">
               <li style="margin-bottom:8px;">
