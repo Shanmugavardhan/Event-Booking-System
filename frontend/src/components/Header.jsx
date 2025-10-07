@@ -1,6 +1,44 @@
 import "./style.css";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import API from "../api/api";
+
 function Header() {
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [message, setMessage] = useState("");
+  const { login } = useAuth();
+  const { user, logout } = useAuth();
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await API.post("/signup", form);
+      if (res.data.token) {
+        login(res.data.token); // automatically log in user
+        setMessage("Signup successful 🎉 You are now logged in.");
+      } else {
+        setMessage(res.data.message);
+      }
+    } catch (err) {
+      setMessage(err.response?.data?.error || "Signup failed");
+    }
+  };
+
+  const handleSignin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await API.post("/", form);
+      login(res.data.token);
+      setMessage("Login Successful");
+    } catch (err) {
+      setMessage(err.response?.data?.error || "Login failed");
+    }
+  };
+
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
@@ -83,7 +121,7 @@ function Header() {
                     src="https://randomuser.me/api/portraits/men/1.jpg"
                   />
                 </div>
-                <span className="user-name">John Doe</span>
+                <span className="user-name">{user.username}</span>
                 <button className="menu-btn">
                   {isUserMenuVisible ? "Hide Menu" : "Show Menu"}
                   <i className="ri-menu-line"></i>
@@ -107,11 +145,15 @@ function Header() {
               <h2>Sign In to EventHub</h2>
               <p>Welcome back! Please enter your details to sign in.</p>
             </div>
-            <form className="modal-form">
+
+            <form className="modal-form" onSubmit={handleSignin}>
               <div className="form-group">
                 <label htmlFor="signin-email">Email Address</label>
                 <input
                   id="signin-email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
                   type="email"
                   placeholder="your@email.com"
                 />
@@ -120,7 +162,10 @@ function Header() {
                 <label htmlFor="signin-password">Password</label>
                 <input
                   id="signin-password"
+                  name="password"
                   type="password"
+                  value={form.password}
+                  onChange={handleChange}
                   placeholder="********"
                 />
               </div>
@@ -161,16 +206,19 @@ function Header() {
                 account.
               </p>
             </div>
-            <form className="modal-form">
+            <form className="modal-form" onSubmit={handleSignup}>
               <div className="form-group">
                 <label htmlFor="signup-name">Full Name</label>
-                <input id="signup-name" type="text" placeholder="Your Name" />
+                <input id="signup-name" type="text" placeholder="username" />
               </div>
               <div className="form-group">
                 <label htmlFor="signup-email">Email Address</label>
                 <input
                   id="signup-email"
+                  name="email"
                   type="email"
+                  value={form.password}
+                  onChange={handleChange}
                   placeholder="your@email.com"
                 />
               </div>
@@ -178,12 +226,16 @@ function Header() {
                 <label htmlFor="signup-password">Password</label>
                 <input
                   id="signup-password"
+                  name="password"
                   type="password"
+                  onChange={handleChange}
                   placeholder="********"
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="signup-confirm-password">Confirm Password</label>
+                <label htmlFor="signup-confirm-password">
+                  Confirm Password
+                </label>
                 <input
                   id="signup-confirm-password"
                   type="password"
@@ -218,8 +270,8 @@ function Header() {
                   textDecoration: "none",
                   transition: "color 0.2s",
                 }}
-                onMouseOver={e => (e.currentTarget.style.color = "#2563eb")}
-                onMouseOut={e => (e.currentTarget.style.color = "#374151")}
+                onMouseOver={(e) => (e.currentTarget.style.color = "#2563eb")}
+                onMouseOut={(e) => (e.currentTarget.style.color = "#374151")}
               >
                 Profile
               </a>
@@ -233,8 +285,8 @@ function Header() {
                   textDecoration: "none",
                   transition: "color 0.2s",
                 }}
-                onMouseOver={e => (e.currentTarget.style.color = "#2563eb")}
-                onMouseOut={e => (e.currentTarget.style.color = "#374151")}
+                onMouseOver={(e) => (e.currentTarget.style.color = "#2563eb")}
+                onMouseOut={(e) => (e.currentTarget.style.color = "#374151")}
               >
                 My Bookings
               </a>
@@ -248,23 +300,23 @@ function Header() {
                   textDecoration: "none",
                   transition: "color 0.2s",
                 }}
-                onMouseOver={e => (e.currentTarget.style.color = "#2563eb")}
-                onMouseOut={e => (e.currentTarget.style.color = "#374151")}
+                onMouseOver={(e) => (e.currentTarget.style.color = "#2563eb")}
+                onMouseOut={(e) => (e.currentTarget.style.color = "#374151")}
               >
                 Settings
               </a>
             </li>
             <li>
               <a
-                href="#"
+                onClick={logout}
                 style={{
                   display: "block",
                   color: "#374151",
                   textDecoration: "none",
                   transition: "color 0.2s",
                 }}
-                onMouseOver={e => (e.currentTarget.style.color = "#2563eb")}
-                onMouseOut={e => (e.currentTarget.style.color = "#374151")}
+                onMouseOver={(e) => (e.currentTarget.style.color = "#2563eb")}
+                onMouseOut={(e) => (e.currentTarget.style.color = "#374151")}
               >
                 Logout
               </a>

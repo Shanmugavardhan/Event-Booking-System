@@ -16,10 +16,13 @@ def check_password(password: str, hashed: str) -> bool:
     #Verify password against stored hash
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
+
+
 #--- JWT token ---
-def generate_token(user_id: int, expires_in: int = 60) -> str:
+def generate_token(user_id: int, username: str, expires_in: int = 60) -> str:
     payload = {
         "user_id": user_id,
+        "username": username,
         "exp": datetime.now(timezone.utc) + timedelta(minutes=expires_in),
         "iat": datetime.now(timezone.utc)
     }
@@ -34,3 +37,12 @@ def verify_token(token: str) -> dict:
         return {"valid": False, "error": "Token has expired"}
     except jwt.InvalidTokenError:
         return {"valid": False, "error": "Invalid token"}
+    
+
+    # payload = {
+#     "user_id": user_id,
+#     "username": username,
+#     "email": email,
+#     "exp": datetime.utcnow() + timedelta(minutes=60),
+#     "iat": datetime.utcnow()
+# }

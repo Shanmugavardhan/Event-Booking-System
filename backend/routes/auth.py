@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from sqlalchemy.orm import Session
 from database import get_db
 from models import User
-from utils import hash_password, check_password, generate_token
+from utils.auth_helper import hash_password, check_password, generate_token
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -24,7 +24,7 @@ def signup():
         return jsonify({'error': 'Username or email already exists'}), 400
 
     hashed_password = hash_password(password)
-    new_user = User(username=username, email=email, password=hashed_password)
+    new_user = User(username=username, email=email, password_hash=hashed_password)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -48,5 +48,5 @@ def signin():
     if not check_password(password, user.password_hash):
         return jsonify({'error': 'Invalid password'}), 401
 
-    token = generate_token(user.id)
+    token = generate_token(user.id, user.username)
     return jsonify({"message": "Signin successful", "token": token}), 200
