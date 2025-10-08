@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext();
 
@@ -9,15 +9,18 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      const decoded = jwt_decode(token);
-      setUser({ token, email_id: decoded.email_id, email: decoded.email, username: decoded.username});
+      const decoded = jwtDecode(token);
+      setUser({ token, username: decoded.username});
     }
   }, []);
 
   const login = (token) => {
+    console.log("login in AuthContext is triggered");
     localStorage.setItem("token", token);
-    const decoded = jwt_decode(token);
-    setUser({ token, email_id: decoded.email_id, email: decoded.email, username: decoded.username});
+    const decoded = jwtDecode(token);
+    setUser({ token, username: decoded.username});
+    console.log(username);
+    console.log("Executed all statements in login");
   };
 
   const logout = () => {

@@ -30,9 +30,11 @@ function Header() {
 
   const handleSignin = async (e) => {
     e.preventDefault();
+    console.log(form)
     try {
-      const res = await API.post("/", form);
+      const res = await API.post("/signin", form);
       login(res.data.token);
+      console.log("Login Succesfull")
       setMessage("Login Successful");
     } catch (err) {
       setMessage(err.response?.data?.error || "Login failed");
@@ -104,24 +106,24 @@ function Header() {
             <div className="header-actions">
               <button
                 onClick={() => openModal("signin")}
-                className="btn btn-outline"
+                className={`btn btn-outline ${!user ? "": "hidden"}`}
               >
                 Sign In
               </button>
               <button
                 onClick={() => openModal("signup")}
-                className="btn btn-primary"
+                className={`btn btn-primary ${!user ? "": "hidden"}`}
               >
                 Sign Up
               </button>
-              <div onClick={toggleUserMenu} className="header-user">
+              <div onClick={toggleUserMenu} className={`header-user ${!user ? "hidden" : ""}`}>
                 <div className="user-avatar">
                   <img
                     alt="User Avatar"
                     src="https://randomuser.me/api/portraits/men/1.jpg"
                   />
                 </div>
-                <span className="user-name">{user.username}</span>
+                <span className="user-name">{user?.username || 'Guest'}</span>
                 <button className="menu-btn">
                   {isUserMenuVisible ? "Hide Menu" : "Show Menu"}
                   <i className="ri-menu-line"></i>
@@ -258,6 +260,7 @@ function Header() {
           </div>
         </div>
       )}
+      {/*Hamburger side Menu */}
       <div className={`user-Menu ${isUserMenuVisible ? "visible" : ""}`}>
         <div className="user-Menu-content">
           <ul className="user-Menu-list">
