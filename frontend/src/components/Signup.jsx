@@ -35,17 +35,17 @@ function SignUp() {
                 />
               </div>
               <div className="form-group">
-                <label for="signup-password">Password</label>
+                <label for="signupPassword">Password</label>
                 <input
-                  id="signup-password"
+                  id="signupPassword"
                   type="password"
                   placeholder="********"
                 />
               </div>
               <div className="form-group">
-                <label for="signup-confirm-password">Confirm Password</label>
+                <label for="signupConfirmPassword">Confirm Password</label>
                 <input
-                  id="signup-confirm-password"
+                  id="signupConfirmPassword"
                   type="password"
                   placeholder="********"
                 />

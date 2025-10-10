@@ -24,25 +24,91 @@ function Header() {
         setMessage(res.data.message);
       }
     } catch (err) {
+      if (err.response) {
+        console.log("Backend error:", err.response.data);
+        alert(error.response.data.message || "SignIn failed");
+      } else {
+        console.error("unexpected error:", err);
+        alert("Something went wrong. Please try again");
+      }
       setMessage(err.response?.data?.error || "Signup failed");
     }
   };
 
   const handleSignin = async (e) => {
     e.preventDefault();
-    console.log(form)
+    console.log(form);
     try {
+      console.log("handle SignIn is triggered");
       const res = await API.post("/signin", form);
+      console.log("await API.post completed");
       login(res.data.token);
-      console.log("Login Succesfull")
+      setShowSignIn(false);
+      document.body.style.overflow = "auto";
+      setAuthStatus("success");
+      setAuthMessage("Sign-In Successful!");
+      setShowAuthResponse(true);
+      setTimeout(() => {
+        setShowAuthResponse(false);
+        window.location.reload();
+      }, 3000);
+      console.log("Login Succesfull");
       setMessage("Login Successful");
     } catch (err) {
       setMessage(err.response?.data?.error || "Login failed");
+      // setShowSignInFailed(true);
+      setAuthStatus("error");
+      setAuthMessage("Sign-In failed, Please try again!");
+      setShowAuthResponse(true);
+      document.body.style.overflow = "auto";
+      setTimeout(() => {
+        setShowAuthResponse(false);
+      }, 3000);
     }
+  };
+
+  const [authStatus, setAuthStatus] = useState("");
+  const [authMessage, setAuthMessage] = useState("");
+  const [showAuthResponse, setShowAuthResponse] = useState(false);
+
+  const AuthResponse = ({ type, message, show }) => {
+    if (!show) return null;
+    return (
+      <div className={`signin-response ${type === "success" ? "animate" : ""}`}>
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 130.2 130.2"
+        >
+          <circle
+            className="path circle"
+            fill="none"
+            stroke="#73AF55"
+            strokeWidth="6"
+            strokeMiterlimit="10"
+            cx="65.1"
+            cy="65.1"
+            r="62.1"
+          />
+          <polyline
+            className="path check"
+            fill="none"
+            stroke="#73AF55"
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeMiterlimit="10"
+            points="100.2,40.2 51.5,88.8 29.8,67.5 "
+          />
+        </svg>
+        <p className={type}>{message}</p>
+      </div>
+    );
   };
 
   const [showSignIn, setShowSignIn] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
+  const [showSignInSuccesful, setShowSignInSuccesful] = useState(false);
+  const [showSignInFailed, setShowSignInFailed] = useState(false);
   const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
   const openModal = (type) => {
     document.body.style.overflow = "hidden";
@@ -67,20 +133,14 @@ function Header() {
     setIsUserMenuVisible((prev) => !prev);
   };
 
-  //   const handleShowSignInModal = () => {
-  //     setShowSignIn(true);
-  //     document.body.style.overflow = "hidden";
-  //   };
+  const handleLogout = (e) => {
+    // prevent anchor navigation
+    if (e && e.preventDefault) e.preventDefault();
+    // call auth logout and hide the user menu
+    logout();
+    setIsUserMenuVisible(false);
+  };
 
-  //   const handleShowSignUpModal = () => {
-  //     setShowSignUp(true);
-  //     document.body.style.overflow = "hidden";
-  //   };
-
-  //   const handleShowUserMenu = () => {
-  //     setShowUserMenu(true);
-  //     document.body.style.overflow = "hidden";
-  //   };
   return (
     <>
       <header className="main-header">
@@ -106,24 +166,27 @@ function Header() {
             <div className="header-actions">
               <button
                 onClick={() => openModal("signin")}
-                className={`btn btn-outline ${!user ? "": "hidden"}`}
+                className={`btn btn-outline ${!user ? "" : "hidden"}`}
               >
                 Sign In
               </button>
               <button
                 onClick={() => openModal("signup")}
-                className={`btn btn-primary ${!user ? "": "hidden"}`}
+                className={`btn btn-primary ${!user ? "" : "hidden"}`}
               >
                 Sign Up
               </button>
-              <div onClick={toggleUserMenu} className={`header-user ${!user ? "hidden" : ""}`}>
+              <div
+                onClick={toggleUserMenu}
+                className={`header-user ${!user ? "hidden" : ""}`}
+              >
                 <div className="user-avatar">
                   <img
                     alt="User Avatar"
                     src="https://randomuser.me/api/portraits/men/1.jpg"
                   />
                 </div>
-                <span className="user-name">{user?.username || 'Guest'}</span>
+                <span className="user-name">{user?.username || "Guest"}</span>
                 <button className="menu-btn">
                   {isUserMenuVisible ? "Hide Menu" : "Show Menu"}
                   <i className="ri-menu-line"></i>
@@ -133,6 +196,12 @@ function Header() {
           </div>
         </div>
       </header>
+      {/* Authentication response toast */}
+      <AuthResponse
+        type={authStatus === "success" ? "success" : "error"}
+        message={authMessage}
+        show={showAuthResponse}
+      />
       {/* Modals */}
       {showSignIn && (
         <div className="sign-in-modal">
@@ -192,6 +261,82 @@ function Header() {
           </div>
         </div>
       )}
+      {/* {showSignInSuccesful && (
+        <div className={`signin-response ${type ==="success" ? "animate": ""}`}>
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 130.2 130.2"
+          >
+            <circle
+              className="path circle"
+              fill="none"
+              stroke="#73AF55"
+              strokeWidth="6"
+              strokeMiterlimit="10"
+              cx="65.1"
+              cy="65.1"
+              r="62.1"
+            />
+            <polyline
+              className="path check"
+              fill="none"
+              stroke="#73AF55"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeMiterlimit="10"
+              points="100.2,40.2 51.5,88.8 29.8,67.5 "
+            />
+          </svg>
+          <p className={type}>{message}</p>
+        </div>
+      )}
+      {showSignInFailed && (
+
+        <div className={`signin-response`}>
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 130.2 130.2"
+          >
+            <circle
+              className="path circle"
+              fill="none"
+              stroke="#D06079"
+              strokeWidth="6"
+              strokeMiterlimit="10"
+              cx="65.1"
+              cy="65.1"
+              r="62.1"
+            />
+            <line
+              className="path line"
+              fill="none"
+              stroke="#D06079"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeMiterlimit="10"
+              x1="34.4"
+              y1="37.9"
+              x2="95.8"
+              y2="92.3"
+            />
+            <line
+              className="path line"
+              fill="none"
+              stroke="#D06079"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeMiterlimit="10"
+              x1="95.8"
+              y1="38"
+              x2="34.4"
+              y2="92.2"
+            />
+          </svg>
+          <p className="error">SignIn Failed, Please tryagain!</p>
+        </div>
+      )} */}
       {showSignUp && (
         <div className="sign-up-modal">
           <div className="modal-container">
@@ -211,7 +356,13 @@ function Header() {
             <form className="modal-form" onSubmit={handleSignup}>
               <div className="form-group">
                 <label htmlFor="signup-name">Full Name</label>
-                <input id="signup-name" type="text" placeholder="username" />
+                <input 
+                  id="signup-name" 
+                  name="fullName"
+                  type="text" 
+                  value={form.fullName}
+                  onChange={handleChange}
+                  placeholder="username" />
               </div>
               <div className="form-group">
                 <label htmlFor="signup-email">Email Address</label>
@@ -219,28 +370,31 @@ function Header() {
                   id="signup-email"
                   name="email"
                   type="email"
-                  value={form.password}
+                  value={form.email}
                   onChange={handleChange}
                   placeholder="your@email.com"
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="signup-password">Password</label>
+                <label htmlFor="signupPassword">Password</label>
                 <input
-                  id="signup-password"
+                  id="signupPassword"
                   name="password"
                   type="password"
+                  value={form.signupPassword}
                   onChange={handleChange}
                   placeholder="********"
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="signup-confirm-password">
+                <label htmlFor="signupConfirmPassword">
                   Confirm Password
                 </label>
                 <input
-                  id="signup-confirm-password"
+                  id="signupConfirmPassword"
+                  name="confirmPassword"
                   type="password"
+                  value={form.signupConfirmPassword}
                   placeholder="********"
                 />
               </div>
@@ -311,7 +465,7 @@ function Header() {
             </li>
             <li>
               <a
-                onClick={logout}
+                onClick={handleLogout}
                 style={{
                   display: "block",
                   color: "#374151",
