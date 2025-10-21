@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://127.0.0.1:5000/auth",
+  baseURL: "https://flask-backend-656829456717.asia-south1.run.app/auth",
   headers: {
     "Content-type": "application/json",
   },
