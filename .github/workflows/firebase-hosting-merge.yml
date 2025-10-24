@@ -23,5 +23,6 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EVENT_BOOKING_SYSTEM_2025 }}"
           channelId: live
           projectId: event-booking-system-2025
+          entryPoint: frontend 
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
