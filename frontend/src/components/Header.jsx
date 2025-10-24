@@ -358,9 +358,9 @@ function Header() {
                 <label htmlFor="signup-name">Full Name</label>
                 <input 
                   id="signup-name" 
-                  name="fullName"
+                  name="username"
                   type="text" 
-                  value={form.fullName}
+                  value={form.username}
                   onChange={handleChange}
                   placeholder="username" />
               </div>
