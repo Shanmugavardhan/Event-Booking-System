@@ -3,7 +3,7 @@ import jwt
 from datetime import datetime, timedelta, timezone
 
 # Secret key for JWT (keep it safe!)
-SECRET_KEY = "your_secret_key"
+SECRET_KEY = "9700677399"
 
 #password hashing
 def hash_password(password: str) -> str:

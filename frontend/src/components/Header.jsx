@@ -14,26 +14,65 @@ function Header() {
   };
 
   const handleSignup = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await API.post("/signup", form);
-      if (res.data.token) {
-        login(res.data.token); // automatically log in user
-        setMessage("Signup successful 🎉 You are now logged in.");
-      } else {
-        setMessage(res.data.message);
-      }
-    } catch (err) {
-      if (err.response) {
-        console.log("Backend error:", err.response.data);
-        alert(error.response.data.message || "SignIn failed");
-      } else {
-        console.error("unexpected error:", err);
-        alert("Something went wrong. Please try again");
-      }
-      setMessage(err.response?.data?.error || "Signup failed");
+  e.preventDefault();
+  try {
+    console.log(">>> sending signup request with form:", form);
+    const res = await API.post("/signup", form);
+    console.log("await API.post completed");
+    console.log("full response:", res);
+    console.log("res.data:", res.data);
+
+    // debug token explicitly
+    console.log("res.data.token (type & value):", typeof res.data?.token, res.data?.token);
+
+    if (res.data?.token) {
+      // success path
+      login(res.data.token); // automatically log in user
+      setShowSignUp(false);
+      document.body.style.overflow = "auto";
+      setAuthStatus("success");
+      setAuthMessage("Sign-Up Successful!");
+      setShowAuthResponse(true);
+      setTimeout(() => {
+        setShowAuthResponse(false);
+        window.location.reload();
+      }, 3000);
+      console.log("Login Successful");
+      setMessage("Signup successful 🎉 You are now logged in.");
+    } else {
+      // no token returned — show server message or fallback
+      console.warn("Signup response did not contain token:", res.data);
+      setMessage(res.data?.message || "Signup completed but no token returned");
     }
-  };
+  } catch (err) {
+    // fixed variable name and added more logs
+    console.error("Signup request failed:", err);
+
+    if (err.response) {
+      console.log("Backend error response:", err.response.data);
+      setAuthStatus("error");
+      setAuthMessage("Sign-In failed, Please try again!");
+      setShowAuthResponse(true);
+      document.body.style.overflow = "auto";
+      setTimeout(() => {
+        setShowAuthResponse(false);
+      }, 3000);
+      // use err not error
+      alert(err.response.data?.message || "SignIn failed");
+    } else {
+      console.error("unexpected error:", err);
+      setAuthStatus("error");
+      setAuthMessage("Sign-Up failed, Please try again!");
+      setShowAuthResponse(true);
+      document.body.style.overflow = "auto";
+      setTimeout(() => {
+        setShowAuthResponse(false);
+      }, 3000);
+      alert("Something went wrong. Please try again");
+    }
+    setMessage(err.response?.data?.error || "Signup failed");
+  }
+};
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -356,13 +395,14 @@ function Header() {
             <form className="modal-form" onSubmit={handleSignup}>
               <div className="form-group">
                 <label htmlFor="signup-name">Full Name</label>
-                <input 
-                  id="signup-name" 
+                <input
+                  id="signup-name"
                   name="username"
-                  type="text" 
-                  value={form.username}
+                  type="text"
+                  value={form.username ?? ""}
                   onChange={handleChange}
-                  placeholder="username" />
+                  placeholder="username"
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="signup-email">Email Address</label>
@@ -381,20 +421,17 @@ function Header() {
                   id="signupPassword"
                   name="password"
                   type="password"
-                  value={form.signupPassword}
+                  value={form.password}
                   onChange={handleChange}
                   placeholder="********"
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="signupConfirmPassword">
-                  Confirm Password
-                </label>
+                <label htmlFor="signupConfirmPassword">Confirm Password</label>
                 <input
                   id="signupConfirmPassword"
                   name="confirmPassword"
                   type="password"
-                  value={form.signupConfirmPassword}
                   placeholder="********"
                 />
               </div>

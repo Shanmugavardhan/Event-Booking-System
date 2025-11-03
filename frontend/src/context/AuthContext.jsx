@@ -17,11 +17,16 @@ export const AuthProvider = ({ children }) => {
   const login = (token) => {
     console.log("login in AuthContext is triggered");
     localStorage.setItem("token", token);
-    const decoded = jwtDecode(token);
-    console.log("token successfully decoded");
-    setUser({ token, username: decoded.username });
-    console.log("setUser worked!");
-    console.log(decoded.username);
+    try {
+      const decoded = jwtDecode(token);
+      console.log("token successfully decoded", decoded);
+      setUser({ token, username: decoded.username });
+      console.log("setUser worked!", decoded.username);
+    } catch (err) {
+      console.error("Failed to decode token:", err);
+      // fallback: still store token but set user minimally
+      setUser({ token, username: null });
+    }
     console.log("Executed all statements in login");
   };
 
